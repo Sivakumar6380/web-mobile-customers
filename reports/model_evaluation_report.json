@@ -1,0 +1,40 @@
+{
+    "Best_Model": "Random_Forest",
+    "Explanation": "The Random Forest was automatically selected because it achieved a higher F1 Score (1.0000 vs 0.9907). F1 Score is preferred as it handles class imbalance better than accuracy, ensuring we minimize both false positives (alert fatigue) and false negatives (missed regressions).",
+    "Metrics": {
+        "Isolation_Forest": {
+            "Accuracy": 0.9980952380952381,
+            "Precision": 0.9814814814814815,
+            "Recall": 1.0,
+            "F1_Score": 0.9906542056074766,
+            "ROC_AUC": 0.9989406779661018,
+            "False_Positive_Rate": 0.00211864406779661,
+            "False_Negative_Rate": 0.0,
+            "Training_Time_s": 0.26328182220458984,
+            "Prediction_Time_s": 0.013595342636108398,
+            "Confusion_Matrix": {
+                "TN": 1884,
+                "FP": 4,
+                "FN": 0,
+                "TP": 212
+            }
+        },
+        "Random_Forest": {
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1_Score": 1.0,
+            "ROC_AUC": 1.0,
+            "False_Positive_Rate": 0.0,
+            "False_Negative_Rate": 0.0,
+            "Training_Time_s": 0.2943298816680908,
+            "Prediction_Time_s": 0.013425588607788086,
+            "Confusion_Matrix": {
+                "TN": 1888,
+                "FP": 0,
+                "FN": 0,
+                "TP": 212
+            }
+        }
+    }
+}
