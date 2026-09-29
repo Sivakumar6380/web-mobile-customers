@@ -1,3 +1,14 @@
+"""
+NexusDB Guardian - Local Application Authentication Database Module
+Database Engine: SQLite (Local application store: database/users.db)
+
+IMPORTANT ARCHITECTURAL NOTE:
+- SQLite is used EXCLUSIVELY for local application user authentication, user management,
+  and demo RBAC session persistence.
+- PostgreSQL 14+ is the TARGET DATABASE ENGINE for all query performance regression analysis,
+  EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) execution plan ingestion, and production DDL benchmarking.
+"""
+
 import os
 import sqlite3
 import datetime
@@ -6,6 +17,7 @@ import bcrypt
 DB_FILE = os.path.join(os.path.dirname(__file__), '..', 'database', 'users.db')
 
 def get_db_connection():
+
     os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
     conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row

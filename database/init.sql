@@ -1,4 +1,8 @@
--- database/init.sql
+-- =========================================================
+-- PostgreSQL Database Schema: Telemetry & Query Regression Logs
+-- Target Engine: PostgreSQL 14+
+-- Purpose: Telemetry warehouse for storing query logs, plan hashes, and regression labels
+-- =========================================================
 
 CREATE TABLE release_history (
     release_id SERIAL PRIMARY KEY,

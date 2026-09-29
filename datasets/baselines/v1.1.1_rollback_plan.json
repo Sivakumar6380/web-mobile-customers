@@ -1,0 +1,55 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Nested Loop",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 0.28,
+      "Total Cost": 12.45,
+      "Plan Rows": 12,
+      "Plan Width": 64,
+      "Actual Startup Time": 0.018,
+      "Actual Total Time": 0.084,
+      "Actual Rows": 12,
+      "Actual Loops": 1,
+      "Shared Hit Blocks": 6,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Index Scan",
+          "Parent Relationship": "Outer",
+          "Relation Name": "orders",
+          "Index Name": "idx_orders_user_id",
+          "Index Cond": "(user_id = 42)",
+          "Startup Cost": 0.15,
+          "Total Cost": 8.16,
+          "Actual Rows": 12,
+          "Actual Total Time": 0.042,
+          "Shared Hit Blocks": 3
+        },
+        {
+          "Node Type": "Index Scan",
+          "Parent Relationship": "Inner",
+          "Relation Name": "users",
+          "Index Name": "users_pkey",
+          "Index Cond": "(user_id = 42)",
+          "Startup Cost": 0.13,
+          "Total Cost": 4.29,
+          "Actual Rows": 1,
+          "Actual Total Time": 0.003,
+          "Shared Hit Blocks": 3
+        }
+      ]
+    },
+    "Planning Time": 0.115,
+    "Execution Time": 0.102,
+    "Target Engine": "PostgreSQL 14+",
+    "Plan Format": "EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)",
+    "Execution Mode": "SYNTHETIC_BENCHMARK",
+    "Release Tag": "v1.1.1",
+    "Schema Status": "Rollback Applied / Index Restored",
+    "Regression Detected": false
+  }
+]

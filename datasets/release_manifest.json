@@ -1,0 +1,51 @@
+{
+  "project": "NexusDB Guardian Query Regression Detector",
+  "target_database_engine": "PostgreSQL 14+",
+  "plan_format": "EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)",
+  "data_mode": "SYNTHETIC_BENCHMARK",
+  "release_flow": [
+    {
+      "release_tag": "v1.0.0",
+      "stage": "Baseline",
+      "migration_script": "database/simulated_orders/migrations/01_v1.0.0_initial_schema.sql",
+      "schema_version": 1,
+      "description": "Initial simulated orders schema with optimal composite & single-column B-Tree indexes.",
+      "plan_file": "datasets/baselines/v1.0.0_baseline_plan.json",
+      "query_plan_node": "Nested Loop / Index Scan",
+      "execution_time_ms": 0.102,
+      "estimated_cost": 12.45,
+      "shared_read_blocks": 0,
+      "regression_detected": false,
+      "rollback_status": "Not Applicable (Baseline)"
+    },
+    {
+      "release_tag": "v1.1.0",
+      "stage": "Regression Induced",
+      "migration_script": "database/simulated_orders/migrations/02_v1.1.0_dropped_index_regression.sql",
+      "schema_version": 2,
+      "description": "Unintended drop of index idx_orders_user_id causing physical plan shift from Index Scan to Seq Scan.",
+      "plan_file": "datasets/baselines/v1.1.0_regressed_plan.json",
+      "query_plan_node": "Hash Join / Seq Scan",
+      "execution_time_ms": 19.125,
+      "estimated_cost": 142.8,
+      "shared_read_blocks": 128,
+      "regression_detected": true,
+      "performance_degradation": "+18,650% execution time increase",
+      "rollback_status": "Rollback Recommended"
+    },
+    {
+      "release_tag": "v1.1.1",
+      "stage": "Rollback Restoration",
+      "migration_script": "database/simulated_orders/migrations/03_v1.1.1_rollback_restore_index.sql",
+      "schema_version": 3,
+      "description": "Rollback migration restoring idx_orders_user_id and reverting query plan back to optimal Index Scan.",
+      "plan_file": "datasets/baselines/v1.1.1_rollback_plan.json",
+      "query_plan_node": "Nested Loop / Index Scan",
+      "execution_time_ms": 0.102,
+      "estimated_cost": 12.45,
+      "shared_read_blocks": 0,
+      "regression_detected": false,
+      "rollback_status": "Rollback Successfully Applied & Verified"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Hash Join",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Join Type": "Inner",
+      "Startup Cost": 18.5,
+      "Total Cost": 142.8,
+      "Plan Rows": 12,
+      "Plan Width": 64,
+      "Actual Startup Time": 1.45,
+      "Actual Total Time": 18.92,
+      "Actual Rows": 12,
+      "Actual Loops": 1,
+      "Hash Cond": "(orders.user_id = users.user_id)",
+      "Shared Hit Blocks": 4,
+      "Shared Read Blocks": 128,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Parent Relationship": "Outer",
+          "Relation Name": "orders",
+          "Filter": "(user_id = 42)",
+          "Startup Cost": 0.0,
+          "Total Cost": 120.0,
+          "Actual Rows": 12,
+          "Actual Total Time": 17.5,
+          "Shared Read Blocks": 124
+        },
+        {
+          "Node Type": "Index Scan",
+          "Parent Relationship": "Inner",
+          "Relation Name": "users",
+          "Index Name": "users_pkey",
+          "Index Cond": "(user_id = 42)",
+          "Startup Cost": 0.13,
+          "Total Cost": 4.29,
+          "Actual Rows": 1,
+          "Actual Total Time": 0.003,
+          "Shared Hit Blocks": 3
+        }
+      ]
+    },
+    "Planning Time": 0.142,
+    "Execution Time": 19.125,
+    "Target Engine": "PostgreSQL 14+",
+    "Plan Format": "EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)",
+    "Execution Mode": "SYNTHETIC_BENCHMARK",
+    "Release Tag": "v1.1.0",
+    "Schema Status": "Unintended Index Drop (idx_orders_user_id removed)",
+    "Regression Detected": true,
+    "Regression Root Cause": "Missing index on orders(user_id) resulting in Seq Scan instead of Index Scan. Execution time increased from 0.102ms to 19.125ms (+18,650%)."
+  }
+]

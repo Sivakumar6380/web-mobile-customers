@@ -9,6 +9,27 @@ The system consists of three main components:
 2. **Backend**: Python Flask REST API integrating `scikit-learn` for ML inference and `pandas` for data manipulation.
 3. **Database**: PostgreSQL storing historical query logs, execution plans, and schema changes.
 
+## Database Engine, Schema Versioning & Rollback
+
+- **Target Database Engine**: **PostgreSQL (Version 14+)** is the designated production engine for query-regression performance analysis.
+- **Query Plan Protocol & Format**: All execution plans are structured around PostgreSQL's native `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` command, extracting node types, costs, buffer cache hit/read ratios, and millisecond execution timings.
+- **Purpose of SQLite**: SQLite is retained **strictly as an auxiliary local application store** (`database/users.db`) for user authentication, password hashing (bcrypt), and demo role-based access control. SQLite execution plans are **never** substituted for PostgreSQL analysis.
+- **Query Plan Source**: Query regression evaluations utilize **synthetic/benchmarked PostgreSQL execution plan trees** modeled accurately after PostgreSQL optimizer behaviors.
+- **Schema Migration & Versioning Mechanism**: Tracked using sequential SQL migrations and an in-database `schema_versions` catalog table:
+  - `database/simulated_orders/migrations/`
+  - Catalog table: `CREATE TABLE schema_versions (version_id, release_tag, migration_script, applied_at, description)`
+- **Release Mapping Flow**:
+  - `v1.0.0` $\rightarrow$ Initial baseline schema with performance indexes (`01_v1.0.0_initial_schema.sql` $\rightarrow$ `v1.0.0_baseline_plan.json`)
+  - `v1.1.0` $\rightarrow$ Schema change dropping `idx_orders_user_id` (`02_v1.1.0_dropped_index_regression.sql` $\rightarrow$ `v1.1.0_regressed_plan.json`)
+  - `v1.1.1` $\rightarrow$ Rollback restoration of index (`03_v1.1.1_rollback_restore_index.sql` $\rightarrow$ `v1.1.1_rollback_plan.json`)
+  - Release Manifest: [datasets/release_manifest.json](file:///c:/projects/Web%20mobile%20customer/datasets/release_manifest.json)
+- **Baseline Capture Mechanism**: Plan captures saved in [datasets/baselines/](file:///c:/projects/Web%20mobile%20customer/datasets/baselines) representing exact JSON trees for parser validation.
+- **Regression Detection Flow**: Compares incoming execution plans against established baselines; flags node shifts (`Index Scan` $\rightarrow$ `Seq Scan`), buffer read spikes, and cost escalations.
+- **Rollback Flow**: Validates that applying the reverse migration (`v1.1.1`) restores execution time and node type back to baseline tolerances (`0.102ms`, `Index Scan`).
+- **Detailed Specification**: See [documentation/schema_tracking_and_rollback.md](file:///c:/projects/Web%20mobile%20customer/documentation/schema_tracking_and_rollback.md).
+
+
+
 ## Machine Learning
 Two approaches are implemented and evaluated:
 - **Isolation Forest**: Unsupervised anomaly detection.
